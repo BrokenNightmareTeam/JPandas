@@ -3,4 +3,6 @@ sudo: false
 script: mvn clean verify
 branches:
   only:
-  - master  
+  - master
+notifications:
+  email: false
