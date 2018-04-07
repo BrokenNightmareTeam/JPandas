@@ -25,6 +25,27 @@ public class DataFrame {
 		types = new ArrayList<String>();
 		maxColumnSize = 0;
 	}
+	
+	public DataFrame(List<String> columnsName, List<List<Comparable<?>>> columns) {
+		data = new ArrayList<List<Comparable<?>>>();
+		indexColumn = new HashMap<String, Integer>();
+		types = new ArrayList<String>();
+		maxColumnSize = 0;
+		for(int i=0; i<columns.size(); i++){
+			if(columnsName.size() <= i)
+				throw new IllegalArgumentException();
+			indexColumn.put(columnsName.get(i), i);
+			data.add(columns.get(i));
+			if(data.get(i).size() > maxColumnSize)
+				maxColumnSize = data.get(i).size();
+			String type = columns.get(i).get(0).getClass().getName();
+			types.add(type);
+			data.get(i).forEach(c -> {
+				if(!c.getClass().getName().equals(type))
+					throw new IllegalArgumentException();
+			});
+		}
+	}
 
 	public DataFrame(List<String> columnsName, Comparable<?>[] ... columns){
 		data = new ArrayList<List<Comparable<?>>>();
@@ -202,4 +223,24 @@ public class DataFrame {
 	public boolean isEmpty() {
 		return data == null || data.isEmpty();
 	}
+	
+	public DataFrame subDataFrame(int indexBegin, int indexEnd, String[] columnNames){
+		List<List<Comparable<?>>> subData = new ArrayList<List<Comparable<?>>>();
+		for(String columnName : columnNames)
+			subData.add(new ArrayList<Comparable<?>>(data.get(indexColumn.get(columnName))));
+		for(List<Comparable<?>> column : subData){
+			column.removeAll(column.subList(0, indexBegin < column.size() ? indexBegin : column.size()));
+			column.removeAll(column.subList(indexEnd < column.size() ? indexEnd : column.size(), column.size()));
+		}
+		return new DataFrame(Arrays.asList(columnNames), subData);
+	}
+	
+	public DataFrame subDataFrameFromLine(int indexBegin, int indexEnd){
+		return subDataFrame(indexBegin, indexEnd, (String[])indexColumn.keySet().toArray());
+	}
+	
+	public DataFrame subDataFrameFromColumn(String[] columnNames){
+		return subDataFrame(0, maxColumnSize, columnNames);
+	}
+	
 }
