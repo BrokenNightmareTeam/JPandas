@@ -3,9 +3,9 @@ package fr.brokennightmareteam.jpandas;
 import org.junit.Test;
 
 import fr.brokennightmareteam.jpandas.dataframe.DataFrame;
+import fr.brokennightmareteam.jpandas.types.IntegerEvaluable;
+import fr.brokennightmareteam.jpandas.types.StringEvaluable;
 import junit.framework.TestCase;
-import types.IntegerEvaluable;
-import types.StringEvaluable;
 
 public class DateFrameTest extends TestCase{
 	
