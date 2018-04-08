@@ -1,6 +1,6 @@
 language: java
 sudo: false
-script: mvn clean verify
+script: mvn clean install jacoco:prepare-agent jacoco:report
 branches:
   only:
   - master
