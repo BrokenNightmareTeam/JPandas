@@ -243,4 +243,54 @@ public class DataFrame {
 		return subDataFrame(0, maxColumnSize, columnNames);
 	}
 	
+	public int average(String columnName){
+		List<Comparable<?>> column = data.get(indexColumn.get(columnName));
+		String type = types.get(indexColumn.get(columnName));
+		int avg = 0;
+		for(Comparable<?> item : column){
+			switch (type){
+			case Consts.booleanName :
+			case Consts.BooleanName :
+				avg += ((Boolean)item).compareTo(Boolean.FALSE);
+				break;
+			case Consts.DoubleName :
+			case Consts.doubleName :
+				avg += (Double)item;
+				break;
+			case Consts.IntegerName :
+			case Consts.intName :
+				avg += (Integer)item;
+				break;
+			case Consts.StringName :
+				avg += ((String)item).length();
+				break;
+			}
+		}
+		return avg/column.size();
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Comparable min(String columnName){
+		List<Comparable<?>> column = data.get(indexColumn.get(columnName));
+		Comparable minItem = column.get(0);
+		for(Comparable item : column){
+			if(item.compareTo(minItem)<0){
+				minItem = item;
+			}
+		}
+		return minItem;
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Comparable max(String columnName){
+		List<Comparable<?>> column = data.get(indexColumn.get(columnName));
+		Comparable maxItem = column.get(0);
+		for(Comparable item : column){
+			if(item.compareTo(maxItem)>0){
+				maxItem = item;
+			}
+		}
+		return maxItem;
+	}
+	
 }
