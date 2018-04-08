@@ -1,5 +1,6 @@
 package fr.brokennightmareteam.jpandas;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,10 +35,11 @@ public class DateFrameTestThrowable extends TestCase{
 
 	@Test(expected=IllegalArgumentException.class)
 	public void constWithDifferentNumberOfColumnsFromFile() {
-		List<String> columnsName = Arrays.asList("1","2","3");
-		Comparable<?>[] column1 = {"item1","item2"};
-		Comparable<?>[] column2 = {1,2,3};
-		new DataFrame(columnsName, column1, column2);
+		try {
+			new DataFrame(this.getClass().getResource("/MainConfig.xml").getFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
