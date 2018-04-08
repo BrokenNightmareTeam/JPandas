@@ -1,6 +1,7 @@
 package fr.brokennightmareteam.jpandas.dataframe;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -69,7 +70,11 @@ public class DataFrame {
 	}
 	
 	public DataFrame(String csvFile) throws IOException{
-		BufferedReader br = new BufferedReader(new FileReader(csvFile));;
+		this(new File(csvFile));
+	}
+	
+	public DataFrame(File file) throws IOException{
+		BufferedReader br = new BufferedReader(new FileReader(file));;
 		data = new ArrayList<List<Comparable<?>>>();
 		indexColumn = new HashMap<String, Integer>();
 		types = new ArrayList<String>();
