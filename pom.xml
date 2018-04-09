@@ -14,6 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jacoco.version>0.8.1</jacoco.version>
 	<junit.version>4.12</junit.version>
+	<coveralls.version>4.3.0</coveralls.version>
 	<maven.compiler.source>1.8</maven.compiler.source>
 	<maven.compiler.target>1.8</maven.compiler.target>
   </properties>
@@ -28,26 +29,42 @@
   </dependencies>
   <build>
   	<plugins>
-  		<plugin>
-  			<groupId>org.jacoco</groupId>
-  			<artifactId>jacoco-maven-plugin</artifactId>
-  			<version>${jacoco.version}</version>
-  			<executions>
-				<execution>
-					<id>jacoco-initialize</id>
-					<goals>
-						<goal>prepare-agent</goal>
-					</goals>
-				</execution>
-				<execution>
-					<id>jacoco-report</id>
-					<phase>package</phase>
-					<goals>
-						<goal>report</goal>
-					</goals>
-				</execution>
-			</executions>
-  		</plugin>
+	  	<plugin>
+		    <groupId>org.jacoco</groupId>
+		    <artifactId>jacoco-maven-plugin</artifactId>
+		    <version>${jacoco.version}</version>
+		    <executions>
+		        <execution>
+		            <goals>
+		                <goal>prepare-agent</goal>
+		            </goals>
+		        </execution>
+		        <execution>
+		            <id>report</id>
+		            <phase>prepare-package</phase>
+		            <goals>
+		                <goal>report</goal>
+		            </goals>
+		        </execution>
+		        <execution>
+		            <id>prepare-integration-test-agent</id>
+		            <goals>
+		               <goal>prepare-agent-integration</goal>
+		            </goals>
+		        </execution>
+		        <execution>
+		           <id>generate-integration-test-report</id>
+		           <goals>
+		               <goal>report-integration</goal>
+		           </goals>
+		       </execution>
+		   </executions>
+		</plugin>
+		<plugin>
+		    <groupId>org.eluder.coveralls</groupId>
+		    <artifactId>coveralls-maven-plugin</artifactId>
+		    <version>${coveralls.version}</version>
+		</plugin>
   	</plugins>
   </build>
 </project>
