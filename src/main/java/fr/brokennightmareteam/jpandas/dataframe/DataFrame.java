@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import fr.brokennightmareteam.jpandas.utils.Consts;
 
@@ -27,14 +28,14 @@ public class DataFrame {
 		maxColumnSize = 0;
 	}
 	
-	public DataFrame(List<String> columnsName, List<List<Comparable<?>>> columns) {
+	public DataFrame(List<String> columnsName, List<List<Comparable<?>>> columns){
 		data = new ArrayList<List<Comparable<?>>>();
 		indexColumn = new HashMap<String, Integer>();
 		types = new ArrayList<String>();
 		maxColumnSize = 0;
 		for(int i=0; i<columns.size(); i++){
 			if(columnsName.size() <= i)
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Nombre de colonnes incorrect");
 			indexColumn.put(columnsName.get(i), i);
 			data.add(columns.get(i));
 			if(data.get(i).size() > maxColumnSize)
@@ -43,34 +44,41 @@ public class DataFrame {
 			types.add(type);
 			data.get(i).forEach(c -> {
 				if(!c.getClass().getName().equals(type))
-					throw new IllegalArgumentException();
+					throw new IllegalArgumentException("Types incorrect");
 			});
 		}
+		if (data.size() != columnsName.size())
+			throw new IllegalArgumentException("Nombre de colonnes incorrect");
 	}
 
 	public DataFrame(List<String> columnsName, Comparable<?>[] ... columns){
-		data = new ArrayList<List<Comparable<?>>>();
-		indexColumn = new HashMap<String, Integer>();
-		types = new ArrayList<String>();
-		maxColumnSize = 0;
-		for(int i=0; i<columns.length; i++){
-			if(columnsName.size() <= i)
-				throw new IllegalArgumentException();
-			indexColumn.put(columnsName.get(i), i);
-			data.add(Arrays.asList(columns[i]));
-			if(data.get(i).size() > maxColumnSize)
-				maxColumnSize = data.get(i).size();
-			String type = columns[i][0].getClass().getName();
-			types.add(type);
-			data.get(i).forEach(c -> {
-				if(!c.getClass().getName().equals(type))
-					throw new IllegalArgumentException();
-			});
-		}
+		this(columnsName, Arrays.stream(columns).map(Arrays::asList).collect(Collectors.toList()));
+//		data = new ArrayList<List<Comparable<?>>>();
+//		indexColumn = new HashMap<String, Integer>();
+//		types = new ArrayList<String>();
+//		maxColumnSize = 0;
+//		
+//		for(int i=0; i<columns.length; i++){
+//			if(columnsName.size() <= i)
+//				throw new IllegalArgumentException();
+//			indexColumn.put(columnsName.get(i), i);
+//			data.add(Arrays.asList(columns[i]));
+//			if(data.get(i).size() > maxColumnSize)
+//				maxColumnSize = data.get(i).size();
+//			String type = columns[i][0].getClass().getName();
+//			types.add(type);
+//			data.get(i).forEach(c -> {
+//				if(!c.getClass().getName().equals(type))
+//					throw new IllegalArgumentException();
+//			});
+//		}
+//		if(data.size() != columnsName.size())
+//			throw new IllegalArgumentException();
 	}
 	
-	public DataFrame(String csvFile) throws IOException{
+	public DataFrame(String csvFile) throws IOException, IllegalArgumentException{
 		this(new File(csvFile));
+		
 	}
 	
 	public DataFrame(File file) throws IOException{
@@ -90,7 +98,7 @@ public class DataFrame {
 			}
 		} else {
 			br.close();
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Format de fichier incorrect");
 		}
 		
 		if(line != null && line.startsWith("\"") && line.endsWith("\"") && (tokens = line.substring(1, line.length()-1).split("\",\"")).length == nbColumns){
@@ -115,7 +123,7 @@ public class DataFrame {
 			maxColumnSize++;
 		} else {
 			br.close();
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Format de fichier incorrect");
 		}
 		
 		while ((line = br.readLine()) != null) {
@@ -129,7 +137,7 @@ public class DataFrame {
 								data.get(i).add(Integer.parseInt(tokens[i]));
 							} catch (NumberFormatException e){
 								br.close();
-								throw new IllegalArgumentException();
+								throw new IllegalArgumentException("Types incorrect");
 							}
 							break;
 						case Consts.doubleName:
@@ -138,7 +146,7 @@ public class DataFrame {
 								data.get(i).add(Double.parseDouble(tokens[i]));
 							} catch (NumberFormatException e){
 								br.close();
-								throw new IllegalArgumentException();
+								throw new IllegalArgumentException("Types incorrect");
 							}
 							break;
 						case Consts.BooleanName:
@@ -148,7 +156,7 @@ public class DataFrame {
 								data.get(i).add(Boolean.parseBoolean(tokenTmp));
 							} else {
 								br.close();
-								throw new IllegalArgumentException();
+								throw new IllegalArgumentException("Types incorrect");
 							}
 							break;
 						case Consts.StringName:
@@ -158,7 +166,7 @@ public class DataFrame {
 				}
 			} else {
 				br.close();
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Format de fichier incorrect");
 			}
 			maxColumnSize++;
         }
