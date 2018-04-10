@@ -3,4 +3,14 @@
 
 
 # JPandas
-Java Data Analysis Library
+
+JPandas est une librairie Java d'analyse de données inspiré de la librairie Python pandas.
+
+## Fonctionnalités
+
+  * Création d'un objet Dataframe depuis un fichier ou depuis une liste
+  * 
+
+## Outils
+
+## Feedback
