@@ -59,7 +59,6 @@ public class DataFrame {
 	
 	public DataFrame(String csvFile) throws IOException, IllegalArgumentException{
 		this(new File(csvFile));
-		
 	}
 	
 	public DataFrame(File file) throws IOException{
