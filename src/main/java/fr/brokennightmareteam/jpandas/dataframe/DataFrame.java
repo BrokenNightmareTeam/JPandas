@@ -53,27 +53,6 @@ public class DataFrame {
 
 	public DataFrame(List<String> columnsName, Comparable<?>[] ... columns){
 		this(columnsName, Arrays.stream(columns).map(Arrays::asList).collect(Collectors.toList()));
-//		data = new ArrayList<List<Comparable<?>>>();
-//		indexColumn = new HashMap<String, Integer>();
-//		types = new ArrayList<String>();
-//		maxColumnSize = 0;
-//		
-//		for(int i=0; i<columns.length; i++){
-//			if(columnsName.size() <= i)
-//				throw new IllegalArgumentException();
-//			indexColumn.put(columnsName.get(i), i);
-//			data.add(Arrays.asList(columns[i]));
-//			if(data.get(i).size() > maxColumnSize)
-//				maxColumnSize = data.get(i).size();
-//			String type = columns[i][0].getClass().getName();
-//			types.add(type);
-//			data.get(i).forEach(c -> {
-//				if(!c.getClass().getName().equals(type))
-//					throw new IllegalArgumentException();
-//			});
-//		}
-//		if(data.size() != columnsName.size())
-//			throw new IllegalArgumentException();
 	}
 	
 	public DataFrame(String csvFile) throws IOException, IllegalArgumentException{
@@ -256,10 +235,10 @@ public class DataFrame {
 		return subDataFrame(0, maxColumnSize, columnNames);
 	}
 	
-	public int average(String columnName){
+	public double avgCol(String columnName){
 		List<Comparable<?>> column = data.get(indexColumn.get(columnName));
 		String type = types.get(indexColumn.get(columnName));
-		int avg = 0;
+		double avg = 0;
 		for(Comparable<?> item : column){
 			switch (type){
 			case Consts.booleanName :
@@ -283,7 +262,7 @@ public class DataFrame {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Comparable min(String columnName){
+	public Comparable minCol(String columnName){
 		List<Comparable<?>> column = data.get(indexColumn.get(columnName));
 		Comparable minItem = column.get(0);
 		for(Comparable item : column){
@@ -295,7 +274,7 @@ public class DataFrame {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Comparable max(String columnName){
+	public Comparable maxCol(String columnName){
 		List<Comparable<?>> column = data.get(indexColumn.get(columnName));
 		Comparable maxItem = column.get(0);
 		for(Comparable item : column){
