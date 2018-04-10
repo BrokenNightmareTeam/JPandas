@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,24 +18,27 @@ public class DataFrame {
 	List<List<Comparable<?>>> data;
 	Map<String, Integer> indexColumn;
 	List<String> types;
+	List<String> names;
 	int maxColumnSize;
 
 	public DataFrame(){
 		data = new ArrayList<List<Comparable<?>>>();
 		indexColumn = new HashMap<String, Integer>();
 		types = new ArrayList<String>();
+		names = new ArrayList<String>();
 		maxColumnSize = 0;
 	}
 	
-	public DataFrame(List<String> columnsName, List<List<Comparable<?>>> columns){
+	public DataFrame(List<String> columnNames, List<List<Comparable<?>>> columns){
 		data = new ArrayList<List<Comparable<?>>>();
 		indexColumn = new HashMap<String, Integer>();
 		types = new ArrayList<String>();
+		names = columnNames;
 		maxColumnSize = 0;
 		for(int i=0; i<columns.size(); i++){
-			if(columnsName.size() <= i)
+			if(names.size() <= i)
 				throw new IllegalArgumentException("Nombre de colonnes incorrect");
-			indexColumn.put(columnsName.get(i), i);
+			indexColumn.put(names.get(i), i);
 			data.add(columns.get(i));
 			if(data.get(i).size() > maxColumnSize)
 				maxColumnSize = data.get(i).size();
@@ -47,12 +49,12 @@ public class DataFrame {
 					throw new IllegalArgumentException("Types incorrect");
 			});
 		}
-		if (data.size() != columnsName.size())
+		if (data.size() != names.size())
 			throw new IllegalArgumentException("Nombre de colonnes incorrect");
 	}
 
-	public DataFrame(List<String> columnsName, Comparable<?>[] ... columns){
-		this(columnsName, Arrays.stream(columns).map(Arrays::asList).collect(Collectors.toList()));
+	public DataFrame(List<String> columnNames, Comparable<?>[] ... columns){
+		this(columnNames, Arrays.stream(columns).map(Arrays::asList).collect(Collectors.toList()));
 	}
 	
 	public DataFrame(String csvFile) throws IOException, IllegalArgumentException{
@@ -65,6 +67,7 @@ public class DataFrame {
 		data = new ArrayList<List<Comparable<?>>>();
 		indexColumn = new HashMap<String, Integer>();
 		types = new ArrayList<String>();
+		names = new ArrayList<String>();
 		maxColumnSize = 0;
 		String line = br.readLine();
 		String[] tokens;
@@ -73,6 +76,7 @@ public class DataFrame {
 			tokens = line.substring(1, line.length()-1).split("\",\"");
 			nbColumns = tokens.length;
 			for(int i=0; i<nbColumns; i++){
+				names.add(tokens[i]);
 				indexColumn.put(tokens[i], i);
 			}
 		} else {
@@ -152,32 +156,38 @@ public class DataFrame {
 		br.close();
 	}
 
-	public void subprint(int indexBegin, int indexEnd){
+	public String subprint(int indexBegin, int indexEnd, List<String> columnNames){
 		List<Integer> maxSizeByColumn = new ArrayList<Integer>();
-		for(int j=0; j<data.size(); j++){
-			List<Comparable<?>> column = data.get(j);
-			Integer tmpMaxSize = indexColumn.keySet().toArray()[j].toString().length();
-			for(int i=indexBegin; i<indexEnd; i++){
-				Comparable<?> item = column.get(i);
-				if (item.toString().length() > tmpMaxSize)
-					tmpMaxSize = item.toString().length();
+		for(int j=0; j<columnNames.size(); j++){
+			String columnName = columnNames.get(j);
+			List<Comparable<?>> column = data.get(indexColumn.get(columnName));
+			if(column != null){
+				Integer tmpMaxSize = columnName.length();
+				for(int i=indexBegin; i<indexEnd; i++){
+					Comparable<?> item = column.get(i);
+					if (item.toString().length() > tmpMaxSize)
+						tmpMaxSize = item.toString().length();
+				}
+				maxSizeByColumn.add(tmpMaxSize);
 			}
-			
-			maxSizeByColumn.add(tmpMaxSize);
 		}
+		
 		String toPrint = "    ";
 		for(int i=0; i<Integer.valueOf(indexEnd).toString().length(); i++){
 			toPrint += " ";
 		}
 		toPrint += "||";
-		Iterator<String> it = indexColumn.keySet().iterator();
-		for(int i=0; i<indexColumn.keySet().size() && it.hasNext(); i++){
-			String columnName = it.next();
-			toPrint += " " + columnName;
-			for (int j=0; j<maxSizeByColumn.get(i) - columnName.length(); j++)
-				toPrint += " ";
-			toPrint += " ||";
+
+		for(int i=0; i<columnNames.size(); i++){
+			String columnName = columnNames.get(i);
+			if (indexColumn.get(columnName) != null){
+				toPrint += " " + columnName;
+				for (int j=0; j<maxSizeByColumn.get(i) - columnName.length(); j++)
+					toPrint += " ";
+				toPrint += " ||";
+			}
 		}
+		
 		toPrint += "\n";
 		for(Integer i=indexBegin; i<indexEnd; i++){
 			toPrint += "|| " + i;
@@ -185,31 +195,46 @@ public class DataFrame {
 				toPrint += " ";
 			}
 			toPrint += " ||";
-			for(int j=0; j<data.size(); j++){
-				List<Comparable<?>> column = data.get(j);
-				String item = i<column.size() ? column.get(i).toString() : "";
-				toPrint += " " + item;
-				for(int k=0; k<(maxSizeByColumn.get(j) - item.length()); k++){
-					toPrint += " ";
+			for(int j=0; j<columnNames.size(); j++){
+				String columnName = columnNames.get(j);
+				if(indexColumn.get(columnName) != null){
+					List<Comparable<?>> column = data.get(indexColumn.get(columnName));
+					String item = i<column.size() ? column.get(i).toString() : "";
+					toPrint += " " + item;
+					for(int k=0; k<(maxSizeByColumn.get(j) - item.length()); k++){
+						toPrint += " ";
+					}
+					toPrint += " ||";
 				}
-				toPrint += " ||";
 			}
 			toPrint += "\n";
 		}
 		toPrint += "\n";
-		System.out.println(toPrint);
+		return toPrint;
 	}
 	
-	public void print(){
-		subprint(0, maxColumnSize);
+	public String print(){
+		return subprint(0, maxColumnSize, names);
 	}
 	
-	public void printFirstLine(int nbLine){
-		subprint(0, nbLine);
+	public String printFirstLine(int nbLine){
+		return subprint(0, nbLine, names);
 	}
 	
-	public void printLastLine(int nbLine){
-		subprint(maxColumnSize - nbLine, maxColumnSize);
+	public String printLastLine(int nbLine){
+		return subprint(maxColumnSize - nbLine, maxColumnSize, names);
+	}
+	
+	public String printColumns(List<String> columns){
+		return subprint(0, maxColumnSize, columns);
+	}
+	
+	public String printFirstLineOnColumnList(int nbLine, List<String> columns){
+		return subprint(0, nbLine, columns);
+	}
+	
+	public String printLastLineOnColumnList(int nbLine, List<String> columns){
+		return subprint(maxColumnSize - nbLine, maxColumnSize, columns);
 	}
 	
 	public boolean isEmpty() {
