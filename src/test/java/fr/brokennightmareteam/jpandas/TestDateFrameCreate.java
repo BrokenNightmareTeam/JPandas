@@ -35,16 +35,4 @@ public class TestDateFrameCreate extends TestCase{
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testConstWithDifferentNumberOfColumnsFromFile() throws IOException {
-		try{
-			new DataFrame(new File(this.getClass().getResource("/DifferentNumberOfColumns.csv").getFile()));
-			fail("Should raise IllegalArgumentException");
-		} catch (IllegalArgumentException e){
-			assertTrue(e.getMessage().equals("Format de fichier incorrect"));
-		} catch (Exception e){
-			fail("Should raise IllegalArgumentException");
-		}
-	}
-
 }
