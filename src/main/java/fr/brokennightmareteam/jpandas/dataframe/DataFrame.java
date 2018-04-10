@@ -82,7 +82,7 @@ public class DataFrame {
 			br.close();
 			throw new IllegalArgumentException("Format de fichier incorrect");
 		}
-		
+		line = br.readLine();
 		if(line != null && line.startsWith("\"") && line.endsWith("\"") && (tokens = line.substring(1, line.length()-1).split("\",\"")).length == nbColumns){
 			for(int i=0; i<nbColumns; i++){
 				String token = tokens[i];
@@ -107,7 +107,7 @@ public class DataFrame {
 			br.close();
 			throw new IllegalArgumentException("Format de fichier incorrect");
 		}
-		
+
 		while ((line = br.readLine()) != null) {
 			if(line.startsWith("\"") && line.endsWith("\"") && (tokens = line.substring(1, line.length()-1).split("\",\"")).length == nbColumns){
 				for(int i=0; i<nbColumns; i++){
@@ -119,7 +119,7 @@ public class DataFrame {
 								data.get(i).add(Integer.parseInt(tokens[i]));
 							} catch (NumberFormatException e){
 								br.close();
-								throw new IllegalArgumentException("Types incorrect");
+								throw new IllegalArgumentException("Types incorrect expected Integer");
 							}
 							break;
 						case Consts.doubleName:
@@ -128,7 +128,7 @@ public class DataFrame {
 								data.get(i).add(Double.parseDouble(tokens[i]));
 							} catch (NumberFormatException e){
 								br.close();
-								throw new IllegalArgumentException("Types incorrect");
+								throw new IllegalArgumentException("Types incorrect expected Double");
 							}
 							break;
 						case Consts.BooleanName:
@@ -138,7 +138,7 @@ public class DataFrame {
 								data.get(i).add(Boolean.parseBoolean(tokenTmp));
 							} else {
 								br.close();
-								throw new IllegalArgumentException("Types incorrect");
+								throw new IllegalArgumentException("Types incorrect expected Boolean");
 							}
 							break;
 						case Consts.StringName:
