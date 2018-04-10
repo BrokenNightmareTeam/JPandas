@@ -1,6 +1,7 @@
 package fr.brokennightmareteam.jpandas;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -25,6 +26,17 @@ public class TestDateFrameCreate extends TestCase{
 				 "|| 2 || Léo      || 17  || 55.8 || false    ||\n" + 
 				 "|| 3 || Arthur   || 33  || 71.9 || true     ||\n" + 
 				 "\n", df.print());
+	}
+	
+	@Test
+	public void testPrinWithBigFile() throws IOException {
+		DataFrame df = new DataFrame(this.getClass().getResource("/BigGoodTest.csv").getFile());
+		assertEquals("        || Id     ||\n" + 
+				 	 "|| 1047 || 1047,1 ||\n" + 
+				 	 "|| 1048 || 1048,1 ||\n" + 
+				 	 "|| 1049 || 1049,1 ||\n" + 
+				 	 "|| 1050 || 1050,1 ||\n" + 
+				 	 "\n", df.printLastLineOnColumnList(4, Arrays.asList("Id")));
 	}
 	
 }
