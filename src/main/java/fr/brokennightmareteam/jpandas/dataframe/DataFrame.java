@@ -243,21 +243,23 @@ public class DataFrame {
 	
 	public DataFrame subDataFrame(int indexBegin, int indexEnd, String[] columnNames){
 		List<List<Comparable<?>>> subData = new ArrayList<List<Comparable<?>>>();
-		for(String columnName : columnNames)
-			subData.add(new ArrayList<Comparable<?>>(data.get(indexColumn.get(columnName))));
+		for(String columnName : columnNames){
+			if(names.contains(columnName))
+				subData.add(new ArrayList<Comparable<?>>(data.get(indexColumn.get(columnName))));
+		}
 		for(List<Comparable<?>> column : subData){
 			column.removeAll(column.subList(0, indexBegin < column.size() ? indexBegin : column.size()));
-			column.removeAll(column.subList(indexEnd < column.size() ? indexEnd : column.size(), column.size()));
+			column.removeAll(column.subList(indexEnd-1 < column.size() ? indexEnd-1 : column.size(), column.size()));
 		}
 		return new DataFrame(Arrays.asList(columnNames), subData);
 	}
 	
 	public DataFrame subDataFrameFromLine(int indexBegin, int indexEnd){
-		return subDataFrame(indexBegin, indexEnd, (String[])indexColumn.keySet().toArray());
+		return subDataFrame(indexBegin, indexEnd, (String[])names.toArray());
 	}
 	
 	public DataFrame subDataFrameFromColumn(String[] columnNames){
-		return subDataFrame(0, maxColumnSize, columnNames);
+		return subDataFrame(0, maxColumnSize+1, columnNames);
 	}
 	
 	public double avgCol(String columnName){
