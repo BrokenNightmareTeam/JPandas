@@ -108,7 +108,7 @@ public class TestDateFrameThrowable extends TestCase{
 	}
 	
 	@Test
-	public void testCreateWithFileBadFormatFirstLine() throws IOException {
+	public void testCreateFromFileWithBadFormatFirstLine() throws IOException {
 		try{
 			new DataFrame(this.getClass().getResource("/BadFormatFirstLine.csv").getFile());
 			fail("Should raise IllegalArgumentException");
@@ -120,7 +120,7 @@ public class TestDateFrameThrowable extends TestCase{
 	}
 	
 	@Test
-	public void testCreateWithFileBadFormatLastLine() throws IOException {
+	public void testCreateFromFileWithBadFormatLastLine() throws IOException {
 		try{
 			new DataFrame(this.getClass().getResource("/BadFormatLastLine.csv").getFile());
 			fail("Should raise IllegalArgumentException");
@@ -132,7 +132,7 @@ public class TestDateFrameThrowable extends TestCase{
 	}
 	
 	@Test
-	public void testCreateWithBadTypeInteger() throws IOException {
+	public void testCreateFromFileWithBadTypeInteger() throws IOException {
 		try{
 			new DataFrame(this.getClass().getResource("/BadTypeInteger.csv").getFile());
 			fail("Should raise IllegalArgumentException");
@@ -144,7 +144,7 @@ public class TestDateFrameThrowable extends TestCase{
 	}
 	
 	@Test
-	public void testCreateWithBadTypeDouble() throws IOException {
+	public void testCreateFromFileWithBadTypeDouble() throws IOException {
 		try{
 			new DataFrame(this.getClass().getResource("/BadTypeDouble.csv").getFile());
 			fail("Should raise IllegalArgumentException");
@@ -156,7 +156,7 @@ public class TestDateFrameThrowable extends TestCase{
 	}
 	
 	@Test
-	public void testCreateWithBadTypeBoolean() throws IOException {
+	public void testCreateFromFileWithBadTypeBoolean() throws IOException {
 		try{
 			new DataFrame(this.getClass().getResource("/BadTypeBoolean.csv").getFile());
 			fail("Should raise IllegalArgumentException");
@@ -167,4 +167,21 @@ public class TestDateFrameThrowable extends TestCase{
 		}
 	}
 
+	@Test
+	public void testCreateFromListWithBadType() throws IOException {
+		List<String> columnsName = Arrays.asList("1","2","3");
+		List<List<Comparable<?>>> data = new ArrayList<List<Comparable<?>>>();
+		data.add(Arrays.asList("item1","item2","item3"));
+		data.add(Arrays.asList(1,"2",3));
+		data.add(Arrays.asList(true,false,true));
+		try{
+			new DataFrame(columnsName, data);
+			fail("Should raise IllegalArgumentException");
+		} catch (IllegalArgumentException e){
+			assertEquals(e.getMessage(),"Types incorrect");
+		} catch (Exception e){
+			fail("Should raise IllegalArgumentException");
+		}
+	}
+	
 }
