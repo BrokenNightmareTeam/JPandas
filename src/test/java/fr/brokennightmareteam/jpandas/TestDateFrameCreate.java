@@ -1,8 +1,6 @@
 package fr.brokennightmareteam.jpandas;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -18,19 +16,15 @@ public class TestDateFrameCreate extends TestCase{
 		assertTrue(df.isEmpty());
 	}
 	
-	public void testConstWithDifferentNumberOfColumnsFromList() {
-		List<String> columnsName = Arrays.asList("1","2","3");
-		List<List<Comparable<?>>> data = new ArrayList<List<Comparable<?>>>();
-		data.add(Arrays.asList("item1","item2"));
-		data.add(Arrays.asList(1,2,3));
-		try{
-			new DataFrame(columnsName, data);
-			fail("Should raise IllegalArgumentException");
-		} catch (IllegalArgumentException e){
-			assertTrue(e.getMessage().equals("Nombre de colonnes incorrect"));
-		} catch (Exception e){
-			fail("Should raise IllegalArgumentException");
-		}
+	@Test
+	public void testCreateWithDifferentNumberOfColumnsFromFileName1() throws IOException {
+		DataFrame df = new DataFrame(this.getClass().getResource("/GoodTest.csv").getFile());
+		assertEquals("     || Name     || Age || Poid || EstBlond ||\n" + 
+				 "|| 0 || Isabelle || 25  || 73.2 || true     ||\n" + 
+				 "|| 1 || Gaspard  || 54  || 64.5 || false    ||\n" + 
+				 "|| 2 || Léo      || 17  || 55.8 || false    ||\n" + 
+				 "|| 3 || Arthur   || 33  || 71.9 || true     ||\n" + 
+				 "\n", df.print());
 	}
-
+	
 }
