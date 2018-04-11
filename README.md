@@ -21,3 +21,4 @@ JPandas est une librairie Java d'analyse de données inspiré de la librairie Py
  * Afficher les dernières lignes du dataframe avec en paramètre le nombre de ligne à afficher et (Optionnel) une liste de noms de colonnes à afficher.
 
 ## Feedback
+
