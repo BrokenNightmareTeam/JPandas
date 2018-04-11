@@ -1,4 +1,2 @@
-FROM maven:alpine
-RUN git clone https://github.com/BrokenNightmareTeam/JPandas.git && \
-    cd JPandas && \
-    mvn jacoco:report coveralls:report
+FROM maven:3.5.3-jdk-10-slim
+RUN mvn jacoco:report coveralls:report
