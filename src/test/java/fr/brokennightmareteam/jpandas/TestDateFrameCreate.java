@@ -29,7 +29,7 @@ public class TestDateFrameCreate extends TestCase{
 	}
 	
 	@Test
-	public void testPrinWithBigFile() throws IOException {
+	public void testPrintLastLineWithBigFile() throws IOException {
 		DataFrame df = new DataFrame(this.getClass().getResource("/BigGoodTest.csv").getFile());
 		assertEquals("        || Id     ||\n" + 
 				 	 "|| 1047 || 1047,1 ||\n" + 
@@ -37,6 +37,17 @@ public class TestDateFrameCreate extends TestCase{
 				 	 "|| 1049 || 1049,1 ||\n" + 
 				 	 "|| 1050 || 1050,1 ||\n" + 
 				 	 "\n", df.printLastLineOnColumnList(4, Arrays.asList("Id")));
+	}
+	
+	@Test
+	public void testPrintMiddleWithBigFile() throws IOException {
+		DataFrame df = new DataFrame(this.getClass().getResource("/BigGoodTest.csv").getFile());
+		System.out.println(df.subprint(8, 11, Arrays.asList("Id")));
+		assertEquals("      || Id   ||\n" + 
+				 	 "|| 8  || 8,1  ||\n" + 
+				 	 "|| 9  || 9,1  ||\n" + 
+				 	 "|| 10 || 10,1 ||\n" + 
+				 	 "\n", df.subprint(8, 11, Arrays.asList("Id")));
 	}
 	
 }
