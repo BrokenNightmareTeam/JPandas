@@ -42,7 +42,6 @@ public class TestDateFrameCreate extends TestCase{
 	@Test
 	public void testPrintMiddleWithBigFile() throws IOException {
 		DataFrame df = new DataFrame(this.getClass().getResource("/BigGoodTest.csv").getFile());
-		System.out.println(df.subprint(8, 11, Arrays.asList("Id")));
 		assertEquals("      || Id   ||\n" + 
 				 	 "|| 8  || 8,1  ||\n" + 
 				 	 "|| 9  || 9,1  ||\n" + 
