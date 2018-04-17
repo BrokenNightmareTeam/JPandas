@@ -19,6 +19,25 @@ JPandas est une librairie Java d'analyse de données inspiré de la librairie Py
  * Afficher un sous-ensemble du dataframe avec en paramètre deux indices de ligne (1ere et dernière (non inclus) ligne) et une liste de noms de colonnes à afficher.
  * Afficher les premières lignes du dataframe avec en paramètre le nombre de ligne à afficher et (Optionnel) une liste de noms de colonnes à afficher.
  * Afficher les dernières lignes du dataframe avec en paramètre le nombre de ligne à afficher et (Optionnel) une liste de noms de colonnes à afficher.
+ 
+#### Statistiques par colonne
+ * Minimum
+ * Maximum
+ * Moyenne
+ 
+## Besoins
+ * Java 8
+ * Maven 4
+ 
+## Utilisation
 
-## Feedback
+Pour compiler le JAR (disponible dans le dossier target) depuis les sources:
 
+```mvn clean code```
+
+Pour lancer le code coverage :
+
+```mvn clean jacoco:prepare-agent install jacoco:report```
+
+Le rapport est disponible dans le dossier target/site/jacoco (index.html)
+ 
